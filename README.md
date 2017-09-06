@@ -1,5 +1,7 @@
 # re-frame-highcharts
 
+[![Clojars Project](https://img.shields.io/clojars/v/re-frame-highcharts.svg)](https://clojars.org/re-frame-highcharts)
+
 A little helper utility to make it easier to use Highcharts with re-frame and reagent.
 
 ## Overview
