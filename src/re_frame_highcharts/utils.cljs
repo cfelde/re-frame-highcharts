@@ -28,8 +28,11 @@
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
                     chart-id (:id chart-meta)]
+                (if (:redo chart-meta)
+                  (swap! chart-instances dissoc chart-id))
                 (if-let [chart-instance (get @chart-instances chart-id)]
-                  (doall (map (partial update-series chart-instance) (:series chart-data))))))]
+                  (doall (map (partial update-series chart-instance) (:series chart-data)))
+                  (mount-chart this))))]
       (reagent/create-class {:reagent-render render-chart
                              :component-did-mount mount-chart
                              :component-did-update update-chart}))))

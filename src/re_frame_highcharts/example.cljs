@@ -19,7 +19,8 @@
 
 (def pie-config
   {:chart {:type "pie"}
-   :plotOptions {:line {:animation false}}
+   :plotOptions {:pie {:animation false}}
+   :title {:text "A pie chart"}
    :series [{:id "series-1"
              :name "Test"
              :innerSize "80%"
@@ -47,12 +48,18 @@
     {:chart-1 {:chart-meta {:id :chart-1
                             :style {:height "100%"
                                     :width "100%"}}
-               :chart-data line-config}
+               :chart-data (assoc-in line-config [:title :text] "Last 120 seconds")}
      :chart-2 {:chart-meta {:id :chart-2
                             :style {:height "100%"
                                     :width "100%"}}
-               :chart-data line-config}
-     :chart-3 {:chart-meta {:id :chart-3}
+               :chart-data (assoc-in line-config [:title :text] "Last 60 seconds")}
+     ; If you add a :redo true to the chart meta map, the
+     ; chart will get recreated instead of updated.
+     ; This is useful when you want to add or remove
+     ; series or do other changes other than updating
+     ; existing series.
+     :chart-3 {:chart-meta {:id :chart-3
+                            :redo true}
                :chart-data pie-config}}))
 
 (rf/reg-event-db

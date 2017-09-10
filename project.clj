@@ -1,4 +1,4 @@
-(defproject re-frame-highcharts "0.1.0"
+(defproject re-frame-highcharts "0.1.1"
   :description "A simple utility helper to use Highcharts with re-frame"
   :url "https://github.com/cfelde/re-frame-highcharts"
   :license {:name "Eclipse Public License"
