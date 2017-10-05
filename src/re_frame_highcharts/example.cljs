@@ -31,6 +31,13 @@
                     {:name "Test 3"
                      :y 25}]}]})
 
+(def stock-config
+  {:rangeSelector {:selected 1}
+   :title {:text "AAPL Stock Price"}
+   :series [{:name "AAPL"
+             :data (js->clj js/exampledata)
+             :tooltip {:valueDecimals 2}}]})
+
 ;; -- Domino 1 - Event Dispatch -----------------------------------------------
 
 (defn dispatch-timer-event
@@ -60,7 +67,11 @@
      ; existing series.
      :chart-3 {:chart-meta {:id :chart-3
                             :redo true}
-               :chart-data pie-config}}))
+               :chart-data pie-config}
+
+     ; Used when viewing Highstock chart
+     :stock-1 {:chart-meta {:id :stock-1}
+               :chart-data stock-config}}))
 
 (rf/reg-event-db
   :timer
@@ -97,12 +108,23 @@
     (fn []
       [chart-utils/chart @data])))
 
-(defn ui
+(defn stock-1
+  []
+  (let [data (rf/subscribe [:value :stock-1])]
+    (fn []
+      [chart-utils/stock @data])))
+
+(defn charts-ui
   []
   [:div
    [:div [chart-1]]
    [:div [chart-2]]
    [:div [chart-3]]])
+
+(defn stock-ui
+  []
+  [:div
+   [:div [stock-1]]])
 
 ;; -- Entry Point -------------------------------------------------------------
 
@@ -112,7 +134,8 @@
 ;; (swap! app-state update-in [:__figwheel_counter] inc)
 
 (defn ^:export run
-  []
+  [type]
   (rf/dispatch-sync [:initialize])
-  (reagent/render-component [ui] (js/document.getElementById "app")))
-
+  (case type
+    "charts" (reagent/render-component [charts-ui] (js/document.getElementById "app"))
+    "stock" (reagent/render-component [stock-ui] (js/document.getElementById "app"))))
