@@ -1,7 +1,8 @@
 (ns re-frame-highcharts.example
   (:require [reagent.core :as reagent]
             [re-frame.core :as rf]
-            [re-frame-highcharts.utils :as chart-utils]))
+            [re-frame-highcharts.utils :as chart-utils]
+            [re-frame-highcharts.example-data :as example-data]))
 
 (def line-config
   {:chart {:type "line"}
@@ -35,7 +36,7 @@
   {:rangeSelector {:selected 1}
    :title {:text "AAPL Stock Price"}
    :series [{:name "AAPL"
-             :data (js->clj js/exampledata)
+             :data example-data/stock-data
              :tooltip {:valueDecimals 2}}]})
 
 ;; -- Domino 1 - Event Dispatch -----------------------------------------------
