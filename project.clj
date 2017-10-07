@@ -1,4 +1,4 @@
-(defproject re-frame-highcharts "0.1.2"
+(defproject re-frame-highcharts "0.1.3-SNAPSHOT"
   :description "A simple utility helper to use Highcharts with re-frame"
   :url "https://github.com/cfelde/re-frame-highcharts"
   :license {:name "Eclipse Public License"
@@ -10,10 +10,16 @@
                  [org.clojure/clojurescript "1.9.854"]
                  [org.clojure/core.async  "0.3.443" :exclusions [org.clojure/tools.reader]]
                  [reagent  "0.6.0-rc"]
-                 [re-frame "0.9.4"]]
+                 [re-frame "0.9.4"]
+
+                 ; Server side stuff
+                 [ring "1.5.1"]
+                 [ring/ring-defaults "0.2.1"]
+                 [compojure "1.5.0"]]
 
   :plugins [[lein-figwheel "0.5.13"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]
+            [lein-ring "0.10.0"]]
 
   :source-paths ["src"]
 
@@ -47,7 +53,10 @@
                 :compiler {:output-to "resources/public/js/compiled/re_frame_highcharts.js"
                            :main re-frame-highcharts.example
                            :optimizations :advanced
+                           :externs ["externs/highcharts.js"]
                            :pretty-print false}}]}
+
+  :ring {:handler re-frame-highcharts.ring/handler}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
