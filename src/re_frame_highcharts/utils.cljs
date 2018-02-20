@@ -46,31 +46,35 @@
               [:div {:style style}])
             (mount-chart
               [this]
-              (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
+              (let [[_ {:keys [chart-meta chart-data post-update-fn]}] (reagent/argv this)
                     chart-id (:id chart-meta)
                     chart-instance (js/Highcharts.StockChart. (reagent/dom-node this)
                                                               (clj->js chart-data))]
-                (swap! stock-instances assoc chart-id chart-instance)))
+                (swap! stock-instances assoc chart-id chart-instance)
+                (when post-update-fn (post-update-fn chart-instance))
+                chart-instance))
             (update-series
-              [chart-instance {:keys [id data]}]
+              [chart-instance {:keys [id data] :as series-options}]
               ; if it's the first time, chart.get(<series id>) will return nil
               ; so we need to add the series instead
               (if-let [series (.get chart-instance id)]
                 (-> series
                     (.setData (clj->js data)))
                 (-> chart-instance
-                    (.addSeries (clj->js {:id   id
-                                          :data data})))))
+                    (.addSeries (clj->js series-options)))))
             (update-chart
               [this]
-              (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
-                    chart-id (:id chart-meta)]
+              (let [[_ {:keys [chart-meta chart-data post-update-fn]}] (reagent/argv this)
+                    chart-id (:id chart-meta)
+                    chart-instance (if-let [ci (get @stock-instances chart-id)]
+                                     ci
+                                     (mount-chart this))]
                 (if (:redo chart-meta)
                   (swap! stock-instances dissoc chart-id))
-                (if-let [chart-instance (get @stock-instances chart-id)]
-                  (doseq [s (:series chart-data)]
-                    (update-series chart-instance s))
-                  (mount-chart this))))]
+                (doseq [s (:series chart-data)]
+                  (update-series chart-instance s))
+                (when post-update-fn
+                  (post-update-fn chart-instance))))]
       (reagent/create-class {:reagent-render       render-chart
                              :component-did-mount  mount-chart
                              :component-did-update update-chart}))))
