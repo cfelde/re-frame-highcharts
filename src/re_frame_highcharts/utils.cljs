@@ -34,8 +34,8 @@
                 (if-let [chart-instance (get @chart-instances chart-id)]
                   (doall (map (partial update-series chart-instance) (:series chart-data)))
                   (mount-chart this))))]
-      (reagent/create-class {:reagent-render render-chart
-                             :component-did-mount mount-chart
+      (reagent/create-class {:reagent-render       render-chart
+                             :component-did-mount  mount-chart
                              :component-did-update update-chart}))))
 
 (defn stock
@@ -53,9 +53,14 @@
                 (swap! stock-instances assoc chart-id chart-instance)))
             (update-series
               [chart-instance {:keys [id data]}]
-              (-> chart-instance
-                  (.get id)
-                  (.setData (clj->js data))))
+              ; if it's the first time, chart.get(<series id>) will return nil
+              ; so we need to add the series instead
+              (if-let [series (.get chart-instance id)]
+                (-> series
+                    (.setData (clj->js data)))
+                (-> chart-instance
+                    (.addSeries (clj->js {:id   id
+                                          :data data})))))
             (update-chart
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
@@ -63,8 +68,9 @@
                 (if (:redo chart-meta)
                   (swap! stock-instances dissoc chart-id))
                 (if-let [chart-instance (get @stock-instances chart-id)]
-                  (doall (map (partial update-series chart-instance) (:series chart-data)))
+                  (doseq [s (:series chart-data)]
+                    (update-series chart-instance s))
                   (mount-chart this))))]
-      (reagent/create-class {:reagent-render render-chart
-                             :component-did-mount mount-chart
+      (reagent/create-class {:reagent-render       render-chart
+                             :component-did-mount  mount-chart
                              :component-did-update update-chart}))))
