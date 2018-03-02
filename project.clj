@@ -1,4 +1,4 @@
-(defproject re-frame-highcharts "0.1.3-SNAPSHOT"
+(defproject andrew-nguyen/re-frame-highcharts "0.1.3-SNAPSHOT"
   :description "A simple utility helper to use Highcharts with re-frame"
   :url "https://github.com/cfelde/re-frame-highcharts"
   :license {:name "Eclipse Public License"
@@ -113,4 +113,4 @@
                    :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                                      :target-path]}}
 
-  :signing {:gpg-key "cfelde@cfelde.com"})
+  )
