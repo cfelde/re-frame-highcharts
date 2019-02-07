@@ -6,18 +6,17 @@
 
   :min-lein-version "2.7.1"
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.854"]
-                 [org.clojure/core.async  "0.3.443" :exclusions [org.clojure/tools.reader]]
-                 [reagent  "0.6.0-rc"]
-                 [re-frame "0.9.4"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/clojurescript "1.10.439"]
+                 [reagent  "0.8.1"]
+                 [re-frame "0.10.6"]
 
                  ; Server side stuff
                  [ring "1.5.1"]
                  [ring/ring-defaults "0.2.1"]
                  [compojure "1.5.0"]]
 
-  :plugins [[lein-figwheel "0.5.13"]
+  :plugins [[lein-figwheel "0.5.17"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]
             [lein-ring "0.10.0"]]
 

@@ -33,6 +33,6 @@ To host the production build in a test server run:
 
 ## License
 
-Copyright © 2017 Christian Felde
+Copyright © 2019 Christian Felde
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.

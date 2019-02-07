@@ -20,11 +20,16 @@
                     chart-instance (js/Highcharts.Chart. (reagent/dom-node this)
                                                          (clj->js chart-data))]
                 (swap! chart-instances assoc chart-id chart-instance)))
-            (update-series
-              [chart-instance {:keys [id data]}]
-              (-> chart-instance
-                  (.get id)
-                  (.setData (clj->js data))))
+            (ensure-series
+              [chart-instance all-ids id-chart-data]
+              (let [current-ids (into #{} (remove nil? (map #(-> % .-options .-id) (.-series chart-instance))))
+                    unwanted-ids (remove #(= % "highcharts-navigator-series") (reduce disj current-ids all-ids))
+                    existing-ids (filter (partial contains? current-ids) all-ids)
+                    new-ids (remove (partial contains? current-ids) all-ids)]
+                (doall (map #(-> chart-instance (.get %) (.remove false)) unwanted-ids))
+                (doall (map #(-> chart-instance (.get %) (.setData (clj->js (:data (get id-chart-data %))) false)) existing-ids))
+                (doall (map #(-> chart-instance (.addSeries (clj->js (get id-chart-data %)) false)) new-ids))
+                (.redraw chart-instance false)))
             (update-chart
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
@@ -32,7 +37,7 @@
                 (if (:redo chart-meta)
                   (swap! chart-instances dissoc chart-id))
                 (if-let [chart-instance (get @chart-instances chart-id)]
-                  (doall (map (partial update-series chart-instance) (:series chart-data)))
+                  (ensure-series chart-instance (map :id (:series chart-data)) (into {} (map #(vector (:id %) %) (:series chart-data))))
                   (mount-chart this))))]
       (reagent/create-class {:reagent-render render-chart
                              :component-did-mount mount-chart
@@ -51,11 +56,16 @@
                     chart-instance (js/Highcharts.StockChart. (reagent/dom-node this)
                                                               (clj->js chart-data))]
                 (swap! stock-instances assoc chart-id chart-instance)))
-            (update-series
-              [chart-instance {:keys [id data]}]
-              (-> chart-instance
-                  (.get id)
-                  (.setData (clj->js data))))
+            (ensure-series
+              [chart-instance all-ids id-chart-data]
+              (let [current-ids (into #{} (remove nil? (map #(-> % .-options .-id) (.-series chart-instance))))
+                    unwanted-ids (remove #(= % "highcharts-navigator-series") (reduce disj current-ids all-ids))
+                    existing-ids (filter (partial contains? current-ids) all-ids)
+                    new-ids (remove (partial contains? current-ids) all-ids)]
+                (doall (map #(-> chart-instance (.get %) (.remove false)) unwanted-ids))
+                (doall (map #(-> chart-instance (.get %) (.setData (clj->js (:data (get id-chart-data %))) false)) existing-ids))
+                (doall (map #(-> chart-instance (.addSeries (clj->js (get id-chart-data %)) false)) new-ids))
+                (.redraw chart-instance false)))
             (update-chart
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
@@ -63,7 +73,7 @@
                 (if (:redo chart-meta)
                   (swap! stock-instances dissoc chart-id))
                 (if-let [chart-instance (get @stock-instances chart-id)]
-                  (doall (map (partial update-series chart-instance) (:series chart-data)))
+                  (ensure-series chart-instance (map :id (:series chart-data)) (into {} (map #(vector (:id %) %) (:series chart-data))))
                   (mount-chart this))))]
       (reagent/create-class {:reagent-render render-chart
                              :component-did-mount mount-chart

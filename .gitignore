@@ -13,4 +13,5 @@ pom.xml.asc
 .repl
 .nrepl-port
 .idea
+.rebel_readline_history
 /*.iml
