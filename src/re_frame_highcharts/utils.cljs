@@ -1,5 +1,6 @@
 (ns re-frame-highcharts.utils
-  (:require [reagent.core :as reagent]))
+  (:require [reagent.core :as reagent]
+            [reagent.dom]))
 
 ; Highcharts wants to maintain its own instance, with mutating state.
 ; So we'll need to break from our lovely pure world and manage these.
@@ -17,7 +18,7 @@
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
                     chart-id (:id chart-meta)
-                    chart-instance (js/Highcharts.Chart. (reagent/dom-node this)
+                    chart-instance (js/Highcharts.Chart. (reagent.dom/dom-node this)
                                                          (clj->js chart-data))]
                 (swap! chart-instances assoc chart-id chart-instance)))
             (ensure-series
@@ -53,7 +54,7 @@
               [this]
               (let [[_ {:keys [chart-meta chart-data]}] (reagent/argv this)
                     chart-id (:id chart-meta)
-                    chart-instance (js/Highcharts.StockChart. (reagent/dom-node this)
+                    chart-instance (js/Highcharts.StockChart. (reagent.dom/dom-node this)
                                                               (clj->js chart-data))]
                 (swap! stock-instances assoc chart-id chart-instance)))
             (ensure-series

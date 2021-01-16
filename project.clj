@@ -8,7 +8,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.439"]
-                 [reagent  "0.8.1"]
+                 [reagent  "1.0.0"]
                  [re-frame "0.10.6"]
 
                  ; Server side stuff
