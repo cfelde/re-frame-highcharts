@@ -23,7 +23,7 @@ To clean all compiled files:
 
     lein clean
 
-To create a production build run:
+To create a production build run (using Java 8):
 
     lein do clean, cljsbuild once min
 
