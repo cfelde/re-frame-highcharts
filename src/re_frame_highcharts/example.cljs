@@ -1,5 +1,6 @@
 (ns re-frame-highcharts.example
   (:require [reagent.core :as reagent]
+            [reagent.dom]
             [re-frame.core :as rf]
             [re-frame-highcharts.utils :as chart-utils]
             [re-frame-highcharts.example-data :as example-data]))
@@ -138,5 +139,5 @@
   [type]
   (rf/dispatch-sync [:initialize])
   (case type
-    "charts" (reagent/render-component [charts-ui] (js/document.getElementById "app"))
-    "stock" (reagent/render-component [stock-ui] (js/document.getElementById "app"))))
+    "charts" (reagent.dom/render [charts-ui] (js/document.getElementById "app"))
+    "stock"  (reagent.dom/render [stock-ui]  (js/document.getElementById "app"))))
